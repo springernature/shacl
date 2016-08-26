@@ -19,3 +19,19 @@ Please prefix your messages with [SHACL API]
 
 To get started, look at the classes ModelConstraintValidator and ResourceConstraintValidator in
 the package org.topbraid.shacl.constraints. There is also an [Example Test Case](../master/src/test/java/org/topbraid/shacl/ValidationExample.java)
+
+## Running 
+
+This fork includes a simple validator that reads model from stdin and returns with a nonzero exit code if validation fails (if the validation results model is non-empty).
+
+To compile:
+
+```
+mvn clean compile assembly:single
+```
+
+To run:
+
+```
+cat ./src/test/resources/sh/tests/core/property/class-001.test.ttl | java -jar ./target/shacl-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+```

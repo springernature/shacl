@@ -49,7 +49,7 @@
 	          <manifest>
 	            <addClasspath>true</addClasspath>
 	            <classpathPrefix>lib/</classpathPrefix>
-	            <mainClass>org.topbraid.shacl.ValidationExample</mainClass>
+	            <mainClass>org.topbraid.shacl.SimpleValidator</mainClass>
 	          </manifest>
 	        </archive>
 	      </configuration>
