@@ -27,7 +27,7 @@ This fork includes a simple validator that reads model from stdin and returns wi
 To compile:
 
 ```
-mvn clean compile assembly:single
+./build
 ```
 
 To run:

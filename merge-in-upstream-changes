@@ -9,9 +9,13 @@ fi
 
 git fetch upstream
 
+git fetch --tags
+
 git checkout master
 
 git merge upstream/master
+
+./build
 
 git tag --list
 
