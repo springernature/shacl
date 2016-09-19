@@ -35,3 +35,11 @@ To run:
 ```
 cat ./src/test/resources/sh/tests/core/property/class-001.test.ttl | java -jar ./target/shacl-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 ```
+
+## Merging in upstream changes
+
+Use
+
+```
+./merge-in-upstream-changes
+```
