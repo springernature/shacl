@@ -10,6 +10,7 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.topbraid.shacl.model.SHConstraintComponent;
+import org.topbraid.shacl.model.SHFactory;
 import org.topbraid.shacl.model.SHParameter;
 import org.topbraid.shacl.model.SHParameterizableConstraint;
 import org.topbraid.shacl.vocabulary.SH;
@@ -92,12 +93,18 @@ public class ComponentConstraintExecutable extends ConstraintExecutable {
 	
 	@Override
 	public List<Literal> getMessages() {
-		Resource validator = getValidator();
-		if(validator != null) {
-			return JenaUtil.getLiteralProperties(validator, SH.message);
+		List<Literal> constraintMessages = JenaUtil.getLiteralProperties(constraint, SH.message);
+		if(!constraintMessages.isEmpty()) {
+			return constraintMessages;
 		}
 		else {
-			return Collections.emptyList();
+			Resource validator = getValidator();
+			if(validator != null) {
+				return JenaUtil.getLiteralProperties(validator, SH.message);
+			}
+			else {
+				return Collections.emptyList();
+			}
 		}
 	}
 	
@@ -132,15 +139,24 @@ public class ComponentConstraintExecutable extends ConstraintExecutable {
 	
 	
 	/**
-	 * Checks if all non-optional parameters are present.
+	 * Checks if all non-optional parameters are present, also checking for either sh:predicate or sh:path
+	 * in the case of property constraints.
 	 * @return true  if complete
 	 */
 	public boolean isComplete() {
+		
 		for(SHParameter param : component.getParameters()) {
 			if(!component.isOptionalParameter(param.getPredicate()) && !constraint.hasProperty(param.getPredicate())) {
 				return false;
 			}
 		}
+		
+		if(SHFactory.isPropertyConstraint(constraint)) {
+			if(!constraint.hasProperty(SH.path) && !constraint.hasProperty(SH.predicate)) {
+				return false;
+			}
+		}
+		
 		return true;
 	}
 
