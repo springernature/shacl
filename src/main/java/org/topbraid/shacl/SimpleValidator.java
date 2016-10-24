@@ -9,13 +9,19 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.util.FileUtils;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.Lang;
 import org.topbraid.shacl.arq.SHACLFunctions;
 import org.topbraid.shacl.constraints.ModelConstraintValidator;
 import org.topbraid.shacl.util.ModelPrinter;
 import org.topbraid.spin.arq.ARQFactory;
 import org.topbraid.spin.util.JenaUtil;
 
+import java.util.ArrayList;
+import java.util.Map;
 import java.io.InputStreamReader;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 public class SimpleValidator {
 
@@ -26,17 +32,35 @@ public class SimpleValidator {
 	public static void main(String[] args) throws Exception {
 		
 		// Load the main data model
-		Model dataModel = JenaUtil.createMemoryModel();
+		Model stdinModel = JenaUtil.createMemoryModel();
 		
 		InputStreamReader cin = new InputStreamReader(System.in);
-		dataModel.read(cin, "urn:dummy", FileUtils.langTurtle);
+		stdinModel.read(cin, "urn:dummy", FileUtils.langTurtle);
 
-		// Load the shapes Model (here, includes the dataModel because that has shape definitions too)
+		ArrayList<Model> argModels = new ArrayList();
+		for (String path : args) {
+			Model argModel = JenaUtil.createMemoryModel();
+			BufferedReader argReader = new BufferedReader(new FileReader(path));
+			argModel.read(argReader, "urn:dummy-" + path, FileUtils.langTurtle);
+
+			argModels.add(argModel);
+		}
+
+		// Load the shapes Model. 
+		// The stdinModel too can have shape definitions, hence they all get concatenated below.
+		// In case of a validation success (exit code 0), the data model (but no SHACL or other arguments passed in).
+		// This is so that the tool can be used in a larger pipeline (passing through its input). 
 		Model shaclModel = SHACLSystemModel.getSHACLModel();
-		MultiUnion unionGraph = new MultiUnion(new Graph[] {
-			shaclModel.getGraph(),
-			dataModel.getGraph()
-		});
+		
+		ArrayList<Model> assessedModels = new ArrayList(argModels);
+		assessedModels.add(shaclModel);
+		assessedModels.add(dataModel);
+
+		Graph[] assessedGraphs = assessedModels.stream()
+									.map(model -> model.getGraph())
+									.toArray(size -> new Graph[size]);
+
+		MultiUnion unionGraph = new MultiUnion(assessedGraphs);
 		Model shapesModel = ModelFactory.createModelForGraph(unionGraph);
 
 		// Make sure all sh:Functions are registered
@@ -55,5 +79,7 @@ public class SimpleValidator {
 			System.out.println(ModelPrinter.get().print(results));
 			System.exit(1);
 		}
+
+		RDFDataMgr.write(System.out, dataModel, Lang.TTL);
 	}
 }
