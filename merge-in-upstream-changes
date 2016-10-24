@@ -1,0 +1,31 @@
+#! /bin/bash
+
+set -e -o pipefail
+
+echo 'Making sure that upstream remote is configured'
+if ! git ls-remote --exit-code upstream &>/dev/null; then
+  git remote add upstream https://github.com/TopQuadrant/shacl.git
+fi
+
+git fetch upstream
+
+git fetch --tags
+
+git checkout master
+
+git merge upstream/master
+
+./build
+
+git tag --list
+
+echo ''
+echo 'Now add a new version tag using'
+echo 'git tag -a <whatever> -m "Tag version <whatever>"'
+
+echo ''
+echo 'Then do git push origin --tags'
+
+echo ''
+echo 'Then point KG_SHACL_VERSION to this new tag in'
+echo 'https://github.com/springernature/knowledge-graph/blob/master/airflow/kg-helpers/configure-time/bin/kg-docker-helper-instructions'
