@@ -54,7 +54,7 @@ public class SimpleValidator {
 		
 		ArrayList<Model> assessedModels = new ArrayList(argModels);
 		assessedModels.add(shaclModel);
-		assessedModels.add(dataModel);
+		assessedModels.add(stdinModel);
 
 		Graph[] assessedGraphs = assessedModels.stream()
 									.map(model -> model.getGraph())
@@ -69,7 +69,7 @@ public class SimpleValidator {
 		// Create Dataset that contains both the main query model and the shapes model
 		// (here, using a temporary URI for the shapes graph)
 		URI shapesGraphURI = URI.create("urn:x-shacl-shapes-graph:" + UUID.randomUUID().toString());
-		Dataset dataset = ARQFactory.get().getDataset(dataModel);
+		Dataset dataset = ARQFactory.get().getDataset(stdinModel);
 		dataset.addNamedModel(shapesGraphURI.toString(), shapesModel);
 		
 		// Run the validator
@@ -80,6 +80,6 @@ public class SimpleValidator {
 			System.exit(1);
 		}
 
-		RDFDataMgr.write(System.out, dataModel, Lang.TTL);
+		RDFDataMgr.write(System.out, stdinModel, Lang.TTL);
 	}
 }
