@@ -76,7 +76,7 @@ public class SimpleValidator {
 		Model results = ModelConstraintValidator.get().validateModel(dataset, shapesGraphURI, null, true, null, null);
 				
 		if (!results.isEmpty()) {
-			System.out.println(ModelPrinter.get().print(results));
+			System.err.println(ModelPrinter.get().print(results));
 			System.exit(1);
 		}
 
