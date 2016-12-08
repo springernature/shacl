@@ -19,37 +19,38 @@ import java.nio.charset.Charset;
 import java.util.UUID;
 
 public class Validator {
-    static byte[] validationModel = null;
+
     static Model shapesModel = null;
 
     public Validator(InputStream shapeFile) throws IOException {
-        validationModel = IOUtils.toString(shapeFile, Charset.forName("UTF-8")).getBytes();
+        // Load File with Validation Shapes
+        byte[] validationModel = IOUtils.toString(shapeFile, Charset.forName("UTF-8")).getBytes();
+        // Create Model for Validation Shapes
         Model datasetTypeModel = JenaUtil.createMemoryModel();
         BufferedReader validationModelReader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(validationModel)));
         datasetTypeModel.read(validationModelReader, "urn:dummy-validator", FileUtils.langTurtle);
+        // Create Shacl Model
         Model shaclModel = SHACLSystemModel.getSHACLModel();
+        // Unite Models
         Graph[] assessedGraphs = new Graph[2];
         assessedGraphs[0] = shaclModel.getGraph();
         assessedGraphs[1] = datasetTypeModel.getGraph();
         shapesModel = ModelFactory.createModelForGraph(new MultiUnion(assessedGraphs));
-
-        // Make sure all sh:Functions are registered
         SHACLFunctions.registerFunctions(ModelFactory.createModelForGraph(shapesModel.getGraph())); //todo: not sure if rdfFile will contain Functions...
     }
 
     public void validate(InputStream rdfFileContents) throws Exception {
-        //Read Input RDF file
+        //Load RDF file
         Model rdfFileModel = JenaUtil.createMemoryModel();
         InputStreamReader rdfFileREader = new InputStreamReader(rdfFileContents, "UTF-8");
         rdfFileModel.read(rdfFileREader, "urn:dummy", FileUtils.langTurtle);
 
         // Create Dataset that contains both the main query model and the shapes model
-        // (here, using a temporary URI for the shapes graph)
         URI shapesGraphURI = URI.create("urn:x-shacl-shapes-graph:" + UUID.randomUUID().toString());
         Dataset dataset = ARQFactory.get().getDataset(rdfFileModel);
         dataset.addNamedModel(shapesGraphURI.toString(), shapesModel);
 
-        // Run the validator
+        // Validate
         Model results = ModelConstraintValidator.get().validateModel(dataset, shapesGraphURI, null, true, null, null);
         if (!results.isEmpty()) {
             throw new Exception(ModelPrinter.get().print(results));
