@@ -1,0 +1,69 @@
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix sg: <http://name.scigraph.com/ontologies/core/> .
+        @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+        @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+        @prefix journals: <http://name.scigraph.com/core/journals/> .
+        @prefix journal-brands: <http://name.scigraph.com/core/journal-brands/> .
+        @prefix product-market-codes: <http://name.scigraph.com/core/product-market-codes/> .
+
+        
+        journal-brands:9c6ea439c71aa3a714add45c4ab039ba
+        a sg:JournalBrand ;
+
+        sg:scigraphId """9c6ea439c71aa3a714add45c4ab039ba""" ;
+        sg:ddsId """11554""" ;
+
+        
+        sg:title """Journal of Real-Time Image Processing""" ;
+    
+        sg:shortTitle """J Real-Time Image Proc""" ;
+    
+        sg:imprint """Springer""" ;
+    
+        sg:publisher """Springer Berlin Heidelberg""" ;
+    
+        sg:webpage <http://link.springer.com/journal/11554> ;
+    
+        sg:webpage <http://link.springer.com/journal/11554> ;
+    
+        sg:copyrightHolder """Springer-Verlag Berlin Heidelberg""" ;
+    
+        sg:hasProductMarketCode product-market-codes:I22021 ;
+    
+        sg:hasProductMarketCode product-market-codes:I18059 ;
+    
+        sg:hasProductMarketCode product-market-codes:I22013 ;
+    
+        sg:hasProductMarketCode product-market-codes:I2203X ;
+    
+        sg:hasProductMarketCode product-market-codes:T24051 ;
+    
+        sg:language """English""" ;
+    
+        sg:openAccess """Hybrid (Open Choice)""" ;
+    
+        .
+        
+        journals:899699511d970e9bb72a122634df8ce5
+        a sg:Journal ;
+        sg:scigraphId """899699511d970e9bb72a122634df8ce5""" ;
+        sg:issn """1861-8200""" ;
+        
+
+        sg:medium """Paper (journals, normal index)""" ;
+        sg:isActivePublication true ;
+        sg:hasJournalBrand journal-brands:9c6ea439c71aa3a714add45c4ab039ba ;
+        .
+    
+        journals:b862cf8070a4544534fe5f820adc7e99
+        a sg:Journal ;
+        sg:scigraphId """b862cf8070a4544534fe5f820adc7e99""" ;
+        sg:issn """1861-8219""" ;
+        sg:doi """10.1007/11554.1861-8219""" ;
+
+        sg:medium """Electronic""" ;
+        sg:isActivePublication true ;
+        sg:hasJournalBrand journal-brands:9c6ea439c71aa3a714add45c4ab039ba ;
+        .
+    

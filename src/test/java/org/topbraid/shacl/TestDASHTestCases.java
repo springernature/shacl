@@ -7,10 +7,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.util.FileUtils;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
@@ -54,9 +51,12 @@ public class TestDASHTestCases {
 				InputStream is = new FileInputStream(f);
 				testModel.read(is, "urn:dummy", FileUtils.langTurtle);
 				testModel.add(SHACLSystemModel.getSHACLModel());
-				Resource ontology = testModel.listStatements(null, OWL.imports, ResourceFactory.createResource(DASH.BASE_URI)).next().getSubject();
-				for(TestCaseType type : TestCaseTypes.getTypes()) {
-					testCases.addAll(type.getTestCases(testModel, ontology));
+				StmtIterator stmtIterator = testModel.listStatements(null, OWL.imports, ResourceFactory.createResource(DASH.BASE_URI));
+				if(stmtIterator.hasNext()) {
+					Resource ontology = stmtIterator.next().getSubject();
+					for (TestCaseType type : TestCaseTypes.getTypes()) {
+						testCases.addAll(type.getTestCases(testModel, ontology));
+					}
 				}
 			}
 		}

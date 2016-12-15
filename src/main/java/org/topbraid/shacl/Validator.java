@@ -20,7 +20,7 @@ import java.util.UUID;
 
 public class Validator {
 
-    static Model shapesModel = null;
+    Model shapesModel = null;
 
     public Validator(InputStream shapeFile) throws IOException {
         // Load File with Validation Shapes
@@ -42,8 +42,8 @@ public class Validator {
     public void validate(InputStream rdfFileContents) throws Exception {
         //Load RDF file
         Model rdfFileModel = JenaUtil.createMemoryModel();
-        InputStreamReader rdfFileREader = new InputStreamReader(rdfFileContents, "UTF-8");
-        rdfFileModel.read(rdfFileREader, "urn:dummy", FileUtils.langTurtle);
+        InputStreamReader rdfFileReader = new InputStreamReader(rdfFileContents, "UTF-8");
+        rdfFileModel.read(rdfFileReader, "urn:dummy", FileUtils.langTurtle);
 
         // Create Dataset that contains both the main query model and the shapes model
         URI shapesGraphURI = URI.create("urn:x-shacl-shapes-graph:" + UUID.randomUUID().toString());
